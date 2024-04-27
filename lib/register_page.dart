@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:tugas4modul7/register_page.dart';
+import 'package:tugas4modul7/login_page.dart';
 import 'dart:convert';
 import 'my_home_page.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController passwordAgainController = TextEditingController();
 
   bool _isHovering = false;
 
@@ -21,9 +22,9 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<void> _login(BuildContext context) async {
+  Future<void> _register(BuildContext context) async {
     final String apiUrl =
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAKO_CxHn0Opx_-RHeUonrk5ySMyD6Diks';
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAKO_CxHn0Opx_-RHeUonrk5ySMyD6Diks';
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -39,16 +40,16 @@ class _LoginPageState extends State<LoginPage> {
 
       final responseData = json.decode(response.body);
       if (response.statusCode == 200) {
-        Navigator.pushReplacement(
+         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } else {
-        throw Exception(responseData['error']['message']);
+         throw Exception(responseData['error']['message']);
       }
     } catch (error) {
       print('Error : $error');
-      showDialog(
+       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('Terdapat Kesalahan!'),
@@ -65,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                         margin: EdgeInsets.only(top: 50),
                         child: Center(
                           child: Text(
-                            "Login",
+                            "Register",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 40,
@@ -148,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                         border:
-                            Border.all(color: Color.fromRGBO(143, 148, 251, 1)),
+                        Border.all(color: Color.fromRGBO(143, 148, 251, 1)),
                         boxShadow: [
                           BoxShadow(
                             color: Color.fromRGBO(143, 148, 251, .2),
@@ -187,6 +189,18 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
+                          Container(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: passwordAgainController,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Enter Password Again",
+                                hintStyle: TextStyle(color: Colors.grey[700]),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -195,43 +209,17 @@ class _LoginPageState extends State<LoginPage> {
                       onEnter: (event) => _toggleHover(true),
                       onExit: (event) => _toggleHover(false),
                       child: GestureDetector(
-                        onTap: () => _login(context),
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 350),
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: _isHovering
-                                ? LinearGradient(
-                                    colors: [
-                                      Color.fromRGBO(143, 148, 251, .6),
-                                      Color.fromRGBO(143, 148, 251, 1),
-                                    ],
-                                  )
-                                : LinearGradient(
-                                    colors: [
-                                      Color.fromRGBO(143, 148, 251, 1),
-                                      Color.fromRGBO(143, 148, 251, .6),
-                                    ],
-                                  ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    MouseRegion(
-                      onEnter: (event) => _toggleHover(true),
-                      onExit: (event) => _toggleHover(false),
-                      child: GestureDetector(
-                        onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterPage())),
+                        onTap: () {
+                          if (passwordController.text == passwordAgainController.text) {
+                            // Passwords match, call _register method
+                            _register(context);
+                          } else {
+                            // Passwords don't match, show an error or handle it accordingly
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Passwords do not match.'),
+                            ));
+                          }
+                        },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 350),
                           height: 50,
@@ -263,15 +251,16 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     SizedBox(height: 70),
-
                     GestureDetector(
                       onTap: () {
-                        // Implement forgot password functionality here
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
                       },
                       child: Text(
-                        "Forgot Password?",
-                        style:
-                            TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),
+                        "Already Have Account?",
+                        style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),
                       ),
                     ),
                   ],
