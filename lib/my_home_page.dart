@@ -3,11 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas4modul7/area_calculator_page.dart';
 import 'package:tugas4modul7/bilangan_prima_page.dart';
 import 'package:tugas4modul7/daftar_anggota_page.dart';
-<<<<<<< HEAD
 import 'package:tugas4modul7/favorite_page.dart';
 import 'package:tugas4modul7/login_page.dart';
-=======
->>>>>>> bcce19c4b1ee81255aa2c0ec50cb852ed9422712
 import 'package:tugas4modul7/situs_rekomendasi_page.dart';
 import 'package:tugas4modul7/timer_page.dart';
 import 'package:tugas4modul7/help_page.dart';
@@ -37,7 +34,6 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
-<<<<<<< HEAD
       appBar: AppBar(
         title: Text('M7'),
         actions: [
@@ -45,15 +41,12 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               final SharedPreferences prefs = await SharedPreferences.getInstance();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
-
               await prefs.remove('favorit');
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
             },
           ),
         ],
       ),
-=======
->>>>>>> bcce19c4b1ee81255aa2c0ec50cb852ed9422712
       body: Center(
         child: widgetOptions.elementAt(_selectedIndex),
       ),
