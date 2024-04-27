@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:tugas4modul7/bilangan_prima_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -70,7 +71,7 @@ class MainOptionsPage extends StatelessWidget {
             Navigator.push(context, MaterialPageRoute(builder: (context) => DaftarAnggotaPage()));
           }),
           OptionItem(title: 'Bilangan Prima', onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => BilanganPrimaPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => BilanganPrima()));
           }),
           OptionItem(title: 'Luas dan Keliling Segitiga', onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => SegitigaPage()));
