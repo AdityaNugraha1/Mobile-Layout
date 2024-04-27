@@ -59,15 +59,30 @@ class MainOptionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(20),
-      children: <Widget>[
-        OptionItem(title: 'Daftar Anggota', onTap: () {}),
-        OptionItem(title: 'Bilangan Prima', onTap: () {}),
-        OptionItem(title: 'Luas dan Keliling Segitiga', onTap: () {}),
-        OptionItem(title: 'Situs Rekomendasi', onTap: () {}),
-        OptionItem(title: 'Favorite', onTap: () {}),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Main Options Page'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: <Widget>[
+          OptionItem(title: 'Daftar Anggota', onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DaftarAnggotaPage()));
+          }),
+          OptionItem(title: 'Bilangan Prima', onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => BilanganPrimaPage()));
+          }),
+          OptionItem(title: 'Luas dan Keliling Segitiga', onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SegitigaPage()));
+          }),
+          OptionItem(title: 'Situs Rekomendasi', onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SitusRekomendasiPage()));
+          }),
+          OptionItem(title: 'Favorite', onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritePage()));
+          }),
+        ],
+      ),
     );
   }
 }
@@ -76,13 +91,87 @@ class OptionItem extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const OptionItem({Key? key, required this.title, required this.onTap}) : super(key: key);
+  const OptionItem({required this.title, required this.onTap, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
       onTap: onTap,
+    );
+  }
+}
+
+class DaftarAnggotaPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Daftar Anggota'),
+      ),
+      body: Center(
+        child: Text(
+            '1. 123210100 - Yeheskiel Pambuko Aji\n'
+            '2. 123210111 - Faza Denandra\n'
+            '3. 123210164 - Muhammad Aditya Nugraha',
+        ),
+      ),
+    );
+  }
+}
+
+class BilanganPrimaPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Bilangan Prima'),
+      ),
+      body: Center(
+        child: Text('Halaman Bilangan Prima'),
+      ),
+    );
+  }
+}
+
+class SegitigaPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Luas dan Keliling Segitiga'),
+      ),
+      body: Center(
+        child: Text('Halaman Luas dan Keliling Segitiga'),
+      ),
+    );
+  }
+}
+
+class SitusRekomendasiPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Situs Rekomendasi'),
+      ),
+      body: Center(
+        child: Text('Halaman Situs Rekomendasi'),
+      ),
+    );
+  }
+}
+
+class FavoritePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Favorite'),
+      ),
+      body: Center(
+        child: Text('Halaman Favorite'),
+      ),
     );
   }
 }
