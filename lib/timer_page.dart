@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TimerPage extends StatefulWidget {
   @override
@@ -57,12 +58,13 @@ class _TimerPageState extends State<TimerPage> {
     final int seconds = _stopwatch.elapsed.inSeconds % 60;
     final int minutes = _stopwatch.elapsed.inMinutes % 60;
     final int hours = _stopwatch.elapsed.inHours;
-    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${(milliseconds / 100).floor().toString().padLeft(1, '0')}';
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${(milliseconds / 100).floor().toString().padLeft(2, '0')}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(143, 148, 251, 1), // Violet background
       body: Column(
         children: [
           Expanded(
@@ -73,20 +75,33 @@ class _TimerPageState extends State<TimerPage> {
                   fontSize: 48.0,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Monospace',
+                  color: Colors.white,
                 ),
               ),
             ),
           ),
           Container(
-            height: 200,
+            height: 450,
             child: ListView.builder(
               itemCount: _lapTimes.length,
               itemBuilder: (context, index) => ListTile(
-                title: Text('Lap ${_lapTimes.length - index}'),
+                title: Text(
+                  'Lap ${_lapTimes.length - index}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(_lapTimes[index]),
+                    Text(
+                      _lapTimes[index],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
                     IconButton(
                       icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () => _removeLapTime(index),
@@ -102,24 +117,28 @@ class _TimerPageState extends State<TimerPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton(
+                  backgroundColor: Colors.green,
                   onPressed: _startStopwatch,
                   tooltip: 'Start',
                   child: Icon(Icons.play_arrow),
                 ),
                 SizedBox(width: 20),
                 FloatingActionButton(
+                  backgroundColor: Colors.red,
                   onPressed: _stopStopwatch,
                   tooltip: 'Stop',
                   child: Icon(Icons.stop),
                 ),
                 SizedBox(width: 20),
                 FloatingActionButton(
+                  backgroundColor: Colors.grey,
                   onPressed: _resetStopwatch,
                   tooltip: 'Reset',
                   child: Icon(Icons.refresh),
                 ),
                 SizedBox(width: 20),
                 FloatingActionButton(
+                  backgroundColor: Colors.orange,
                   onPressed: _stopwatch.isRunning ? _recordLapTime : null,
                   tooltip: 'Lap',
                   child: Icon(Icons.flag),
