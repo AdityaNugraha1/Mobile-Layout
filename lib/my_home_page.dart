@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:tugas4modul7/bilangan_prima_page.dart';
+
+List<Map<String, String>> favoriteSites = [];
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -74,7 +79,7 @@ class MainOptionsPage extends StatelessWidget {
             Navigator.push(context, MaterialPageRoute(builder: (context) => BilanganPrima()));
           }),
           OptionItem(title: 'Luas dan Keliling Segitiga', onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SegitigaPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AreaCalculator()));
           }),
           OptionItem(title: 'Situs Rekomendasi', onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => SitusRekomendasiPage()));
@@ -134,30 +139,295 @@ class BilanganPrimaPage extends StatelessWidget {
     );
   }
 }
+class Triangle {
+  double base;
+  double height;
+  double side1;
+  double side2;
 
-class SegitigaPage extends StatelessWidget {
+  Triangle(this.base, this.height, this.side1, this.side2);
+
+  double calculateArea() {
+    return 0.5 * base * height;
+  }
+
+  double calculatePerimeter() {
+    return base + side1 + side2;
+  }
+}
+
+class AreaCalculator extends StatefulWidget {
+  @override
+  _AreaCalculatorState createState() => _AreaCalculatorState();
+}
+
+class _AreaCalculatorState extends State<AreaCalculator> {
+  final baseController = TextEditingController();
+  final heightController = TextEditingController();
+  final side1Controller = TextEditingController();
+  final side2Controller = TextEditingController();
+  double area = 0.0;
+  double perimeter = 0.0;
+  String dropdownValue = 'Luas';
+  final int maxDigits = 15;
+
+  @override
+  void initState() {
+    super.initState();
+    baseController.addListener(() => validateInput(baseController));
+    heightController.addListener(() => validateInput(heightController));
+    side1Controller.addListener(() => validateInput(side1Controller));
+    side2Controller.addListener(() => validateInput(side2Controller));
+  }
+
+  @override
+  void dispose() {
+    baseController.dispose();
+    heightController.dispose();
+    side1Controller.dispose();
+    side2Controller.dispose();
+    super.dispose();
+  }
+
+  void validateInput(TextEditingController controller) {
+    if (controller.text.length > maxDigits) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Input melebihi batas maksimal $maxDigits digit.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+  }
+
+  Widget buildAreaFields() {
+    return Column(
+      children: <Widget>[
+        TextField(
+          controller: baseController,
+          decoration: InputDecoration(
+            labelText: 'Alas',
+            hintText: 'Masukkan Alas Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: heightController,
+          decoration: InputDecoration(
+            labelText: 'Tinggi',
+            hintText: 'Masukkan Tinggi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
+      ],
+    );
+  }
+
+  Widget buildPerimeterFields() {
+    return Column(
+      children: <Widget>[
+        TextField(
+          controller: baseController,
+          decoration: InputDecoration(
+            labelText: 'Sisi 1',
+            hintText: 'Masukkan Sisi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: side1Controller,
+          decoration: InputDecoration(
+            labelText: 'Sisi 2',
+            hintText: 'Masukkan Sisi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: side2Controller,
+          decoration: InputDecoration(
+            labelText: 'Sisi 3',
+            hintText: 'Masukkan Sisi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
+      ],
+    );
+  }
+
+  void resetFields() {
+    baseController.clear();
+    heightController.clear();
+    side1Controller.clear();
+    side2Controller.clear();
+    setState(() {
+      area = 0.0;
+      perimeter = 0.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text('Luas dan Keliling Segitiga'),
+        title: Text('Luas and Keliling Segitiga', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        backgroundColor: Colors.teal,
       ),
-      body: Center(
-        child: Text('Halaman Luas dan Keliling Segitiga'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            DropdownButton<String>(
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: <String>['Luas', 'Keliling']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: TextStyle(fontSize: 16)),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 20),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: dropdownValue == 'Luas' ? buildAreaFields() : buildPerimeterFields(),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Hitung $dropdownValue', style: TextStyle(fontSize: 16)),
+                  onPressed: () {
+                    setState(() {
+                      double base = double.parse(baseController.text);
+                      if (dropdownValue == 'Luas') {
+                        double height = double.parse(heightController.text);
+                        Triangle triangle = Triangle(base, height, 0, 0);
+                        area = triangle.calculateArea();
+                      } else {
+                        double side1 = double.parse(side1Controller.text);
+                        double side2 = double.parse(side2Controller.text);
+                        Triangle triangle = Triangle(base, 0, side1, side2);
+                        perimeter = triangle.calculatePerimeter();
+                      }
+                    });
+                  },
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Reset', style: TextStyle(fontSize: 16)),
+                  onPressed: resetFields,
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Text(
+              dropdownValue == 'Luas' ? 'Luas: $area' : 'Keliling: $perimeter',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class SitusRekomendasiPage extends StatelessWidget {
+class SitusRekomendasiPage extends StatefulWidget {
+  @override
+  _SitusRekomendasiPageState createState() => _SitusRekomendasiPageState();
+}
+
+class _SitusRekomendasiPageState extends State<SitusRekomendasiPage> {
+  final List<Map<String, String>> situsRekomendasi = [
+    {"nama": "9GAG", "url": "https://9gag.com/"},
+    {"nama": "xkcd", "url": "https://xkcd.com/"},
+    {"nama": "Mangabat", "url": "https://h.mangabat.com/"},
+    {"nama": "Bored Panda", "url": "https://www.boredpanda.com/"},
+    {"nama": "Krunker", "url": "https://krunker.io/"},
+    {"nama": "Kaskus", "url": "https://www.kaskus.co.id/"},
+    {"nama": "Reddit", "url": "https://www.reddit.com/"},
+    {"nama": "Giphy", "url": "https://giphy.com/"},
+    {"nama": "Riot Games", "url": "https://www.riotgames.com/"},
+    {"nama": "1CAK", "url": "https://1cak.com/"},
+    {"nama": "GetJar", "url": "https://getjar.com/"},
+    {"nama": "Eagle Sealer", "url": "https://www.eaglesealer.com/"},
+    {"nama": "Kuyhaa", "url": "https://www.kuyhaa-me.com/"},
+    {"nama": "Y8 Games", "url": "https://www.y8.com/"},
+    {"nama": "Brilio", "url": "https://www.brilio.net/"},
+    {"nama": "The Oatmeal", "url": "https://theoatmeal.com/"},
+    {"nama": "Oasis de l'Aube", "url": "https://oasisdelaube.org/"},
+    {"nama": "Waptrick", "url": "https://waptrick.com/"},
+    {"nama": "Unsplash", "url": "https://unsplash.com/"},
+    {"nama": "WikiHow", "url": "https://www.wikihow.com/"},
+  ];
+
+  void toggleFavorite(Map<String, String> site) {
+    setState(() {
+      final isFavorite = favoriteSites.any((item) => item["url"] == site["url"]);
+      if (isFavorite) {
+        favoriteSites.removeWhere((item) => item["url"] == site["url"]);
+      } else {
+        favoriteSites.add(site);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Situs Rekomendasi'),
       ),
-      body: Center(
-        child: Text('Halaman Situs Rekomendasi'),
+      body: ListView.builder(
+        itemCount: situsRekomendasi.length,
+        itemBuilder: (BuildContext context, int index) {
+          final site = situsRekomendasi[index];
+          final isFavorite = favoriteSites.any((item) => item["url"] == site["url"]);
+          return ListTile(
+            title: Text(site["nama"]!),
+            subtitle: Text(site["url"]!),
+            trailing: IconButton(
+              icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+              color: isFavorite ? Colors.red : null,
+              onPressed: () {
+                toggleFavorite(site);
+              },
+            ),
+            onTap: () async {
+              final url = site["url"]!;
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Could not launch $url')),
+                );
+              }
+            },
+          );
+        },
       ),
     );
   }
@@ -170,8 +440,16 @@ class FavoritePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Favorite'),
       ),
-      body: Center(
-        child: Text('Halaman Favorite'),
+      body: ListView.builder(
+        itemCount: favoriteSites.length,
+        itemBuilder: (context, index) {
+          final site = favoriteSites[index];
+          return ListTile(
+            title: Text(site["nama"]!),
+            subtitle: Text(site["url"]!),
+            trailing: Icon(Icons.favorite, color: Colors.red),
+          );
+        },
       ),
     );
   }
