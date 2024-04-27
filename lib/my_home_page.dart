@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -164,6 +164,37 @@ class _AreaCalculatorState extends State<AreaCalculator> {
   double area = 0.0;
   double perimeter = 0.0;
   String dropdownValue = 'Luas';
+  final int maxDigits = 10;
+
+  @override
+  void initState() {
+    super.initState();
+    baseController.addListener(() => validateInput(baseController));
+    heightController.addListener(() => validateInput(heightController));
+    side1Controller.addListener(() => validateInput(side1Controller));
+    side2Controller.addListener(() => validateInput(side2Controller));
+  }
+
+  @override
+  void dispose() {
+    baseController.dispose();
+    heightController.dispose();
+    side1Controller.dispose();
+    side2Controller.dispose();
+    super.dispose();
+  }
+
+  void validateInput(TextEditingController controller) {
+    if (controller.text.length > maxDigits) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Input melebihi batas maksimal $maxDigits digit.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+  }
 
   Widget buildAreaFields() {
     return Column(
@@ -175,6 +206,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
             hintText: 'Masukkan Alas Segitiga',
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
         SizedBox(height: 10),
         TextField(
@@ -184,6 +216,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
             hintText: 'Masukkan Tinggi Segitiga',
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ],
     );
@@ -199,6 +232,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
             hintText: 'Masukkan Sisi Segitiga',
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
         SizedBox(height: 10),
         TextField(
@@ -208,6 +242,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
             hintText: 'Masukkan Sisi Segitiga',
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
         SizedBox(height: 10),
         TextField(
@@ -217,9 +252,21 @@ class _AreaCalculatorState extends State<AreaCalculator> {
             hintText: 'Masukkan Sisi Segitiga',
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ],
     );
+  }
+
+  void resetFields() {
+    baseController.clear();
+    heightController.clear();
+    side1Controller.clear();
+    side2Controller.clear();
+    setState(() {
+      area = 0.0;
+      perimeter = 0.0;
+    });
   }
 
   @override
@@ -255,27 +302,41 @@ class _AreaCalculatorState extends State<AreaCalculator> {
               child: dropdownValue == 'Luas' ? buildAreaFields() : buildPerimeterFields(),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal, // background
-                foregroundColor: Colors.white, // foreground
-              ),
-              child: Text('Hitung $dropdownValue', style: TextStyle(fontSize: 16)),
-              onPressed: () {
-                setState(() {
-                  double base = double.parse(baseController.text);
-                  if (dropdownValue == 'Luas') {
-                    double height = double.parse(heightController.text);
-                    Triangle triangle = Triangle(base, height, 0, 0);
-                    area = triangle.calculateArea();
-                  } else {
-                    double side1 = double.parse(side1Controller.text);
-                    double side2 = double.parse(side2Controller.text);
-                    Triangle triangle = Triangle(base, 0, side1, side2);
-                    perimeter = triangle.calculatePerimeter();
-                  }
-                });
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Hitung $dropdownValue', style: TextStyle(fontSize: 16)),
+                  onPressed: () {
+                    setState(() {
+                      double base = double.parse(baseController.text);
+                      if (dropdownValue == 'Luas') {
+                        double height = double.parse(heightController.text);
+                        Triangle triangle = Triangle(base, height, 0, 0);
+                        area = triangle.calculateArea();
+                      } else {
+                        double side1 = double.parse(side1Controller.text);
+                        double side2 = double.parse(side2Controller.text);
+                        Triangle triangle = Triangle(base, 0, side1, side2);
+                        perimeter = triangle.calculatePerimeter();
+                      }
+                    });
+                  },
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Reset', style: TextStyle(fontSize: 16)),
+                  onPressed: resetFields,
+                ),
+              ],
             ),
             SizedBox(height: 20),
             Text(
