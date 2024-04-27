@@ -127,7 +127,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: Text('Luas and Keliling Segitiga', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -144,7 +144,8 @@ class _AreaCalculatorState extends State<AreaCalculator> {
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: TextStyle(fontSize: 16)),
+                  child: Text(value, style: TextStyle(fontSize: 18,
+                  fontWeight: FontWeight.bold)),
                 );
               }).toList(),
             ),
@@ -159,7 +160,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
               children: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                   ),
                   child: Text('Hitung $dropdownValue', style: TextStyle(fontSize: 16)),
@@ -193,7 +194,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
             SizedBox(height: 20),
             Text(
               dropdownValue == 'Luas' ? 'Luas: $area' : 'Keliling: $perimeter',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
             ),
           ],
         ),
