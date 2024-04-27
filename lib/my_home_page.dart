@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -164,7 +165,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
   double area = 0.0;
   double perimeter = 0.0;
   String dropdownValue = 'Luas';
-  final int maxDigits = 10;
+  final int maxDigits = 15;
 
   @override
   void initState() {
@@ -351,14 +352,53 @@ class _AreaCalculatorState extends State<AreaCalculator> {
 }
 
 class SitusRekomendasiPage extends StatelessWidget {
+  final List<Map<String, String>> situsRekomendasi = [
+    {"nama": "9GAG", "url": "https://9gag.com/"},
+    {"nama": "xkcd", "url": "https://xkcd.com/"},
+    {"nama": "Mangabat", "url": "https://h.mangabat.com/"},
+    {"nama": "Bored Panda", "url": "https://www.boredpanda.com/"},
+    {"nama": "Krunker", "url": "https://krunker.io/"},
+    {"nama": "Kaskus", "url": "https://www.kaskus.co.id/"},
+    {"nama": "Reddit", "url": "https://www.reddit.com/"},
+    {"nama": "Giphy", "url": "https://giphy.com/"},
+    {"nama": "Riot Games", "url": "https://www.riotgames.com/"},
+    {"nama": "1CAK", "url": "https://1cak.com/"},
+    {"nama": "GetJar", "url": "https://getjar.com/"},
+    {"nama": "Eagle Sealer", "url": "https://www.eaglesealer.com/"},
+    {"nama": "Kuyhaa", "url": "https://www.kuyhaa-me.com/"},
+    {"nama": "Y8 Games", "url": "https://www.y8.com/"},
+    {"nama": "Brilio", "url": "https://www.brilio.net/"},
+    {"nama": "The Oatmeal", "url": "https://theoatmeal.com/"},
+    {"nama": "Oasis de l'Aube", "url": "https://oasisdelaube.org/"},
+    {"nama": "Waptrick", "url": "https://waptrick.com/"},
+    {"nama": "Unsplash", "url": "https://unsplash.com/"},
+    {"nama": "WikiHow", "url": "https://www.wikihow.com/"},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Situs Rekomendasi'),
       ),
-      body: Center(
-        child: Text('Halaman Situs Rekomendasi'),
+      body: ListView.builder(
+        itemCount: situsRekomendasi.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(situsRekomendasi[index]["nama"]!),
+            subtitle: Text(situsRekomendasi[index]["url"]!),
+            onTap: () async {
+              final url = situsRekomendasi[index]["url"]!;
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Tidak dapat membuka ${situsRekomendasi[index]["nama"]}')),
+                );
+              }
+            },
+          );
+        },
       ),
     );
   }
