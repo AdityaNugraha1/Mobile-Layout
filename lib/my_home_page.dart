@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -73,7 +74,7 @@ class MainOptionsPage extends StatelessWidget {
             Navigator.push(context, MaterialPageRoute(builder: (context) => BilanganPrimaPage()));
           }),
           OptionItem(title: 'Luas dan Keliling Segitiga', onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SegitigaPage()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => AreaCalculator()));
           }),
           OptionItem(title: 'Situs Rekomendasi', onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => SitusRekomendasiPage()));
@@ -133,16 +134,156 @@ class BilanganPrimaPage extends StatelessWidget {
     );
   }
 }
+class Triangle {
+  double base;
+  double height;
+  double side1;
+  double side2;
 
-class SegitigaPage extends StatelessWidget {
+  Triangle(this.base, this.height, this.side1, this.side2);
+
+  double calculateArea() {
+    return 0.5 * base * height;
+  }
+
+  double calculatePerimeter() {
+    return base + side1 + side2;
+  }
+}
+
+class AreaCalculator extends StatefulWidget {
+  @override
+  _AreaCalculatorState createState() => _AreaCalculatorState();
+}
+
+class _AreaCalculatorState extends State<AreaCalculator> {
+  final baseController = TextEditingController();
+  final heightController = TextEditingController();
+  final side1Controller = TextEditingController();
+  final side2Controller = TextEditingController();
+  double area = 0.0;
+  double perimeter = 0.0;
+  String dropdownValue = 'Luas';
+
+  Widget buildAreaFields() {
+    return Column(
+      children: <Widget>[
+        TextField(
+          controller: baseController,
+          decoration: InputDecoration(
+            labelText: 'Alas',
+            hintText: 'Masukkan Alas Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: heightController,
+          decoration: InputDecoration(
+            labelText: 'Tinggi',
+            hintText: 'Masukkan Tinggi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+        ),
+      ],
+    );
+  }
+
+  Widget buildPerimeterFields() {
+    return Column(
+      children: <Widget>[
+        TextField(
+          controller: baseController,
+          decoration: InputDecoration(
+            labelText: 'Sisi 1',
+            hintText: 'Masukkan Sisi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: side1Controller,
+          decoration: InputDecoration(
+            labelText: 'Sisi 2',
+            hintText: 'Masukkan Sisi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+        ),
+        SizedBox(height: 10),
+        TextField(
+          controller: side2Controller,
+          decoration: InputDecoration(
+            labelText: 'Sisi 3',
+            hintText: 'Masukkan Sisi Segitiga',
+          ),
+          keyboardType: TextInputType.number,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text('Luas dan Keliling Segitiga'),
+        title: Text('Luas and Keliling Segitiga', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        backgroundColor: Colors.teal,
       ),
-      body: Center(
-        child: Text('Halaman Luas dan Keliling Segitiga'),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+            DropdownButton<String>(
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: <String>['Luas', 'Keliling']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: TextStyle(fontSize: 16)),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 20),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: dropdownValue == 'Luas' ? buildAreaFields() : buildPerimeterFields(),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // background
+                foregroundColor: Colors.white, // foreground
+              ),
+              child: Text('Hitung $dropdownValue', style: TextStyle(fontSize: 16)),
+              onPressed: () {
+                setState(() {
+                  double base = double.parse(baseController.text);
+                  if (dropdownValue == 'Luas') {
+                    double height = double.parse(heightController.text);
+                    Triangle triangle = Triangle(base, height, 0, 0);
+                    area = triangle.calculateArea();
+                  } else {
+                    double side1 = double.parse(side1Controller.text);
+                    double side2 = double.parse(side2Controller.text);
+                    Triangle triangle = Triangle(base, 0, side1, side2);
+                    perimeter = triangle.calculatePerimeter();
+                  }
+                });
+              },
+            ),
+            SizedBox(height: 20),
+            Text(
+              dropdownValue == 'Luas' ? 'Luas: $area' : 'Keliling: $perimeter',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+            ),
+          ],
+        ),
       ),
     );
   }
