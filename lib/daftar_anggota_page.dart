@@ -10,7 +10,7 @@ class DaftarAnggotaPage extends StatelessWidget {
     {
       "nama": "Faza Denandra",
       "nim": "123210111",
-      "photo": "https://via.placeholder.com/300/FF0000/FFFFFF?Text=WebsiteBuilders.com",
+      "photo": "https://lh3.googleusercontent.com/pw/AP1GczOoEw8YUh_3-eoSOtBEyUUDpStrXDM8x68RFUN8O-WKqQOh4qXZ0_Url6kCT7ZXUx7XpEFfAqP9Rs3B5BdNhUdOtRlxI3tJW28MS1UhZkwXld7jBjisbBZDScrZsM1BKEcCdN_xkuBX8ZVCPrx9lMV9g_xi-mv-J6hhswQSXfRBWs0AQXaFDwJOpmy4m4rcHXXzCQnVl3VKC61JpZELrPIYVvIyz6LOFt8puP2TgXTw_uftwqag8wUhdVQxH-g0CFpEReNibNQWxcT6MW9nJRxUTZQQMVII1UaSg9b82en3SjBxQT6A0kyTzgdIFdmJjMHT7hLEVvPurUX2L3eFnWJxGqXhzokihrlOdXP01aLgX3gzhQrH4BaJunx0sukTwfJWlpqC6JjX1MsmguYW3xGVbgYmpw2tjr5UyirKHbQyn_NCmTAOlD0YM7hGqxATAnl-P2CIy19ZZE7qNwkaEv7fL2WIn7frGDxsKaxuNSR_6dJ8Uks45iFH_Ml_0IELztDEVg2OEi2exsyTDyzMICy6Kyd04eVjHKWnNuTnJ2FHwfpY_OPvz8n3ju9_umlwe_Hkm1_pCtfX0W4QK7xcZE6s-Qhc48-wNKbjFH-wYymWldBYpFXrW-EBmOH3ALuSNOTEBJJGcNAe8gNCb1GSqThG5tEhZMjAMjsaT168z6adajcbxhgCl8vWEGxX1qImh53d6l6fyFcaQtjrRLwgHv3ExYbBzWQQ4jPMtfNnRAf9UoaeXLF8Qvt3IjF69zBVcfifcrElikCNe8rDla2Pl4kgi-nqT-wwqp2mbrBU8vbZcvXBCJBwrsV02Sz_yRUFMf9-YD_KJH9WpcTYQCo-q7VDk2pPo-6AkIpT103HcZ6edtxYZ-BZE_XoBlWoF2BshbdxG8zJmwAOhnbqOqiz86U=w598-h785-s-no-gm?authuser=0",
     },
     {
       "nama": "Muhammad Aditya Nugraha",
