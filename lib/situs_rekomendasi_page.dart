@@ -3,6 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'object/situs_rekomendasi.dart';
 
+Future<void> launchURL(String url) async {
+  final Uri _url = Uri.parse(url);
+  if (!await launchUrl(_url)) {
+    throw "Couldn't launch url";
+  }
+}
+
 class SitusRekomendasiPage extends StatefulWidget {
   late SharedPreferences prefs;
 
@@ -111,10 +118,10 @@ class _SitusRekomendasiPageState extends State<SitusRekomendasiPage> {
               },
             ),
             onTap: () async {
-              final url = site["url"] ?? '';
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
+              final String url = site["url"] ?? '';
+              try {
+                await launchURL(url);
+              } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Could not launch $url')),
                 );

@@ -3,6 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugas4modul7/object/situs_rekomendasi.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+Future<void> launchURL(String url) async {
+  final Uri _url = Uri.parse(url);
+  if (!await launchUrl(_url)) {
+    throw "Couldn't launch url";
+  }
+}
+
 class FavoritePage extends StatefulWidget {
   @override
   State<FavoritePage> createState() => _FavoritePageState();
@@ -105,15 +112,15 @@ class _FavoritePageState extends State<FavoritePage> {
               },
             ),
             onTap: () async {
-              final url = site["url"] ?? '';
-              if (await canLaunchUrl(Uri.parse(url))) {
-                await launchUrl(Uri.parse(url));
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Could not launch $url')),
-                );
-              }
-            },
+            final String url = site["url"] ?? '';
+            try {
+              await launchURL(url);
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Could not launch $url')),
+              );
+            }
+          },
           );
         },
       ),

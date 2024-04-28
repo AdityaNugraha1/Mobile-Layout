@@ -81,7 +81,7 @@ class _TimerPageState extends State<TimerPage> {
             ),
           ),
           Container(
-            height: 450,
+            height: 350,
             child: ListView.builder(
               itemCount: _lapTimes.length,
               itemBuilder: (context, index) => ListTile(
