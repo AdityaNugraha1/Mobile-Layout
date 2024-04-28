@@ -127,7 +127,7 @@ class _AreaCalculatorState extends State<AreaCalculator> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: Text('Luas and Keliling Segitiga', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Colors.blue,
+        backgroundColor: Color.fromRGBO(143, 148, 251, 1),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

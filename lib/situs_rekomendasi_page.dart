@@ -6,6 +6,8 @@ import 'object/situs_rekomendasi.dart';
 class SitusRekomendasiPage extends StatefulWidget {
   late SharedPreferences prefs;
 
+  SitusRekomendasiPage({super.key});
+
   @override
   _SitusRekomendasiPageState createState() => _SitusRekomendasiPageState();
 }
@@ -71,32 +73,39 @@ class _SitusRekomendasiPageState extends State<SitusRekomendasiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Situs Rekomendasi'),
-        backgroundColor: Color.fromRGBO(143, 148, 251, 1), // Violet theme for AppBar
+        title: const Text('Situs Rekomendasi'),
+        backgroundColor: const Color.fromRGBO(143, 148, 251, 1),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          ? const Center(child: CircularProgressIndicator())
+      : ListView.builder(
         itemCount: situsRekomendasi.length,
         itemBuilder: (BuildContext context, int index) {
           final site = situsRekomendasi[index];
           final isFavorite = situsFavorit?.contains(index.toString());
           return ListTile(
-            leading: Image.network(site["gambar"] ?? 'https://via.placeholder.com/150'),
+            leading: Container(
+              width: 50,
+              height: 50,
+              child: Image.network(
+                site["gambar"] ?? 'https://via.placeholder.com/150',
+                fit: BoxFit.cover,
+              ),
+            ),
             title: Text(
               site["nama"] ?? 'Unknown Name',
-              style: TextStyle(
-                color: Colors.white, // Adjusting text color to white for contrast
+              style: const TextStyle(
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Text(
               site["url"] ?? 'No URL',
-              style: TextStyle(color: Colors.white70), // Lighter white for secondary text
+              style: const TextStyle(color: Colors.white70),
             ),
             trailing: IconButton(
               icon: Icon(isFavorite == true ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite == true ? Colors.red : Colors.white),
+                  color: isFavorite == true ? Colors.red : Colors.white),
               onPressed: () {
                 toggleFavorite(index);
               },
@@ -114,51 +123,7 @@ class _SitusRekomendasiPageState extends State<SitusRekomendasiPage> {
           );
         },
       ),
-      backgroundColor: Color.fromRGBO(143, 148, 251, 0.6), // Slightly transparent violet
+      backgroundColor: const Color.fromRGBO(143, 148, 251, 0.6),
     );
   }
 }
-//
-// class FavoritePage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Favorite'),
-//         backgroundColor: Color.fromRGBO(143, 148, 251, 1), // Violet theme for AppBar
-//       ),
-//       body: ListView.builder(
-//         itemCount: favoriteSites.length,
-//         itemBuilder: (context, index) {
-//           final site = favoriteSites[index];
-//           return ListTile(
-//             leading: Image.network(site["gambar"] ?? 'https://via.placeholder.com/150'),
-//             title: Text(
-//               site["nama"] ?? 'Unknown Name',
-//               style: TextStyle(
-//                 color: Colors.white, // White text for better contrast
-//                 fontWeight: FontWeight.bold,
-//               ),
-//             ),
-//             subtitle: Text(
-//               site["url"] ?? 'No URL',
-//               style: TextStyle(color: Colors.white70), // Lighter white for secondary text
-//             ),
-//             trailing: Icon(Icons.favorite, color: Colors.red),
-//             onTap: () async {
-//               final url = site["url"] ?? '';
-//               if (await canLaunch(url)) {
-//                 await launch(url);
-//               } else {
-//                 ScaffoldMessenger.of(context).showSnackBar(
-//                   SnackBar(content: Text('Could not launch $url')),
-//                 );
-//               }
-//             },
-//           );
-//         },
-//       ),
-//       backgroundColor: Color.fromRGBO(143, 148, 251, 0.6), // Consistent background color
-//     );
-//   }
-// }

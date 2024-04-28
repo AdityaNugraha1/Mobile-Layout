@@ -34,19 +34,6 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('M7'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('favorit');
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
-            },
-          ),
-        ],
-      ),
       body: Center(
         child: widgetOptions.elementAt(_selectedIndex),
       ),
